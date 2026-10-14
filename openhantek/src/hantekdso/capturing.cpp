@@ -99,8 +99,8 @@ void CapturingThread::capture() {
             case uint8_t( Hantek::ControlCode::CONTROL_SETSAMPLERATE ):
                 samplerate = id2sr( controlCommand->data()[ 0 ] );
                 uint8_t sampleIndex = controlCommand->data()[ 1 ];
-                oversampling = uint8_t( hdc->specification->fixedSampleRates[ sampleIndex ].oversampling );
-                effectiveSamplerate = hdc->specification->fixedSampleRates[ sampleIndex ].samplerate;
+                oversampling = uint8_t( hdc->sampleRates()[ sampleIndex ].oversampling );
+                effectiveSamplerate = hdc->sampleRates()[ sampleIndex ].samplerate;
                 if ( !realSlow && effectiveSamplerate < 10e3 &&
                      hdc->scope->trigger.mode == Dso::TriggerMode::ROLL ) { // switch to real slow rolling
                     for ( auto it = data.begin(); it != data.end(); ) {

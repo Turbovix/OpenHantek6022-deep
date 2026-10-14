@@ -79,6 +79,15 @@ HorizontalDock::HorizontalDock( DsoSettingsScope *scope, const Dso::ControlSpeci
     for ( unsigned depth : MEMORY_DEPTHS )
         memoryDepthComboBox->addItem( valueToString( depth, UNIT_SAMPLES, 0 ) );
 
+    oversamplingLabel = new QLabel( tr( "Oversampling" ) );
+    oversamplingComboBox = new QComboBox();
+    if ( scope->toolTipVisible )
+        oversamplingComboBox->setToolTip( tr( "Reduced: less averaging of raw samples at slow samplerates, "
+                                              "allows much higher samplerates with deep memory but shows more noise" ) );
+    oversamplingComboBox->addItem( tr( "Normal" ) );
+    oversamplingComboBox->addItem( tr( "Reduced" ) );
+    hasReducedOversampling = !spec->fixedSampleRatesReduced.empty();
+
     dockLayout = new QGridLayout();
     dockLayout->setColumnMinimumWidth( 0, 64 );
     dockLayout->setColumnStretch( 1, 1 );
@@ -91,6 +100,13 @@ HorizontalDock::HorizontalDock( DsoSettingsScope *scope, const Dso::ControlSpeci
     dockLayout->addWidget( samplerateSiSpinBox, row++, 1 );
     dockLayout->addWidget( memoryDepthLabel, row, 0 );
     dockLayout->addWidget( memoryDepthComboBox, row++, 1 );
+    if ( hasReducedOversampling ) { // available for this model?
+        dockLayout->addWidget( oversamplingLabel, row, 0 );
+        dockLayout->addWidget( oversamplingComboBox, row++, 1 );
+    } else {
+        oversamplingLabel->hide();
+        oversamplingComboBox->hide();
+    }
     dockLayout->addWidget( formatLabel, row, 0 );
     dockLayout->addWidget( formatComboBox, row++, 1 );
     dockLayout->addWidget( calfreqLabel, row, 0 );
@@ -113,12 +129,15 @@ HorizontalDock::HorizontalDock( DsoSettingsScope *scope, const Dso::ControlSpeci
              [ this ]( int index ) { this->calfreqIndexSelected( index ); } );
     connect( memoryDepthComboBox, SELECT< int >::OVERLOAD_OF( &QComboBox::currentIndexChanged ), this,
              [ this ]( int index ) { this->memoryDepthIndexSelected( index ); } );
+    connect( oversamplingComboBox, SELECT< int >::OVERLOAD_OF( &QComboBox::currentIndexChanged ), this,
+             [ this ]( int index ) { this->oversamplingIndexSelected( index ); } );
 }
 
 
 void HorizontalDock::loadSettings( DsoSettingsScope *scope ) {
     // Set values
     setMemoryDepth( scope->horizontal.memoryDepth );
+    setReducedOversampling( scope->horizontal.reducedOversampling );
     setSamplerate( scope->horizontal.samplerate );
     setTimebase( scope->horizontal.timebase );
     setFormat( scope->horizontal.format );
@@ -127,10 +146,15 @@ void HorizontalDock::loadSettings( DsoSettingsScope *scope ) {
 
 
 void HorizontalDock::triggerModeChanged( Dso::TriggerMode mode ) {
-    if ( mode == Dso::TriggerMode::ROLL )
+    rollMode = mode == Dso::TriggerMode::ROLL;
+    if ( rollMode )
         timebaseSiSpinBox->setMinimum( 0.2 );
     else
         timebaseSiSpinBox->setMinimum( 1e-9 );
+    // roll mode uses a fixed buffer size, memory depth and oversampling setting do not apply
+    memoryDepthComboBox->setEnabled( !rollMode );
+    oversamplingComboBox->setEnabled( !rollMode && scope->horizontal.memoryDepth > unsigned( SAMPLESIZE ) );
+    calculateSamplerateSteps( scope->horizontal.timebase );
 }
 
 
@@ -272,7 +296,8 @@ void HorizontalDock::calculateSamplerateSteps( double timebase ) {
             // max must be > minRate
             // find max samplesrate to get not more then this number of samples per div
             // use max. half of the memory depth to get enough samples for two full screens (to ensure triggering)
-            if ( id && sRate * timebase <= scope->horizontal.memoryDepth / 2 / DIVS_TIME ) { // 1000 samples/div @ 20 kS
+            unsigned depth = rollMode ? unsigned( SAMPLESIZE ) : scope->horizontal.memoryDepth;
+            if ( id && sRate * timebase <= depth / 2 / DIVS_TIME ) { // 1000 samples/div @ 20 kS
                 max = sRate;
             }
         }
@@ -314,6 +339,23 @@ void HorizontalDock::setMemoryDepth( unsigned depth ) {
         return;
     QSignalBlocker blocker( memoryDepthComboBox );
     memoryDepthComboBox->setCurrentIndex( int( it - MEMORY_DEPTHS.begin() ) );
+    oversamplingComboBox->setEnabled( !rollMode && depth > unsigned( SAMPLESIZE ) ); // only for deep memory
+}
+
+
+void HorizontalDock::setReducedOversampling( bool reduced ) {
+    QSignalBlocker blocker( oversamplingComboBox );
+    oversamplingComboBox->setCurrentIndex( reduced ? 1 : 0 );
+}
+
+
+/// \brief Called when the oversampling combobox changes its value.
+/// \param index 0: normal, 1: reduced.
+void HorizontalDock::oversamplingIndexSelected( int index ) {
+    if ( scope->verboseLevel > 2 )
+        qDebug() << "  HDock::oversamplingIndexSelected()" << index;
+    scope->horizontal.reducedOversampling = index == 1;
+    emit reducedOversamplingChanged( scope->horizontal.reducedOversampling );
 }
 
 
@@ -324,6 +366,7 @@ void HorizontalDock::memoryDepthIndexSelected( int index ) {
     if ( scope->verboseLevel > 2 )
         qDebug() << "  HDock::memoryDepthIndexSelected()" << index << depth;
     scope->horizontal.memoryDepth = depth;
+    oversamplingComboBox->setEnabled( !rollMode && depth > unsigned( SAMPLESIZE ) ); // only for deep memory
     calculateSamplerateSteps( scope->horizontal.timebase ); // the samplerate limit depends on the depth
     emit memoryDepthChanged( depth );
 }

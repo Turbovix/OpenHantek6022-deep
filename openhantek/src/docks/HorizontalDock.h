@@ -61,6 +61,8 @@ class HorizontalDock : public QDockWidget {
     /// \brief Changes the memory depth.
     /// \param depth The max. number of samples per channel and acquisition.
     void setMemoryDepth( unsigned depth );
+    /// \brief Selects normal or reduced oversampling (effective only for deep memory).
+    void setReducedOversampling( bool reduced );
 
   public slots:
     /// \brief Loads settings into GUI
@@ -77,12 +79,14 @@ class HorizontalDock : public QDockWidget {
     QLabel *formatLabel;            ///< The label for the format combobox
     QLabel *calfreqLabel;           ///< The label for the calibration frequency spinbox
     QLabel *memoryDepthLabel;       ///< The label for the memory depth combobox
+    QLabel *oversamplingLabel;      ///< The label for the oversampling combobox
     SiSpinBox *samplerateSiSpinBox; ///< Selects the samplerate for acquisitions
     SiSpinBox *timebaseSiSpinBox;   ///< Selects the timebase for voltage graphs
     QComboBox *formatComboBox;      ///< Selects the way the sampled data is
                                     ///  interpreted and shown
     QComboBox *calfreqComboBox;     ///< Selects the calibration frequency
     QComboBox *memoryDepthComboBox; ///< Selects the max. number of samples per acquisition
+    QComboBox *oversamplingComboBox; ///< Selects normal or reduced oversampling for deep memory
 
     DsoSettingsScope *scope;         ///< The settings provided by the parent class
     QList< double > timebaseSteps;   ///< Steps for the timebase spinbox
@@ -97,9 +101,12 @@ class HorizontalDock : public QDockWidget {
     void formatSelected( int index );
     void calfreqIndexSelected( int index );
     void memoryDepthIndexSelected( int index );
+    void oversamplingIndexSelected( int index );
 
   private:
     double samplerateRequest = 0;
+    bool hasReducedOversampling = false; ///< the model offers a samplerate table with reduced oversampling
+    bool rollMode = false;               ///< roll mode uses a fixed buffer size, no deep memory
 
   signals:
     void samplerateChanged( double samplerate );   ///< The samplerate has been changed
@@ -108,4 +115,5 @@ class HorizontalDock : public QDockWidget {
     void formatChanged( Dso::GraphFormat format ); ///< The viewing format has been changed
     void calfreqChanged( double calfreq );         ///< The timebase has been changed
     void memoryDepthChanged( unsigned depth );     ///< The memory depth has been changed
+    void reducedOversamplingChanged( bool reduced ); ///< The oversampling setting has been changed
 };

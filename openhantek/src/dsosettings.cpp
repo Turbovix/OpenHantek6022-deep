@@ -146,6 +146,8 @@ void DsoSettings::load() {
         if ( std::find( MEMORY_DEPTHS.begin(), MEMORY_DEPTHS.end(), depth ) != MEMORY_DEPTHS.end() )
             scope.horizontal.memoryDepth = depth;
     }
+    if ( storeSettings->contains( "reducedOversampling" ) )
+        scope.horizontal.reducedOversampling = storeSettings->value( "reducedOversampling" ).toBool();
     if ( storeSettings->contains( "samplerate" ) )
         scope.horizontal.samplerate = storeSettings->value( "samplerate" ).toDouble();
     if ( storeSettings->contains( "calfreq" ) )
@@ -388,6 +390,7 @@ void DsoSettings::save() {
     storeSettings->setValue( "acquireInterval", scope.horizontal.acquireInterval );
     storeSettings->setValue( "recordLength", scope.horizontal.recordLength );
     storeSettings->setValue( "memoryDepth", scope.horizontal.memoryDepth );
+    storeSettings->setValue( "reducedOversampling", scope.horizontal.reducedOversampling );
     storeSettings->setValue( "samplerate", scope.horizontal.samplerate );
     storeSettings->setValue( "calfreq", scope.horizontal.calfreq );
     storeSettings->endGroup(); // horizontal

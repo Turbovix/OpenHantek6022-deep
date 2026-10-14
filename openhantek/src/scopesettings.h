@@ -26,6 +26,7 @@ struct DsoSettingsScopeHorizontal {
 
     int recordLength = 0;           ///< Sample count
     unsigned memoryDepth = 20000;   ///< Max. samples per channel and acquisition (see MEMORY_DEPTHS)
+    bool reducedOversampling = false; ///< Less oversampling at slow samplerates for longer records
     double timebase = 1e-3; ///< Timebase in s/div
     double maxTimebase = 1; ///< Allow very slow timebases 0.1 ... 10.0 s/div
 #ifdef Q_PROCESSOR_ARM

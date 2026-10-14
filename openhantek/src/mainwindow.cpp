@@ -308,6 +308,8 @@ MainWindow::MainWindow( HantekDsoControl *dsoControl, DsoSettings *settings, Exp
              [ dsoControl, this ]() { dsoControl->setCalFreq( dsoSettings->scope.horizontal.calfreq ); } );
     connect( horizontalDock, &HorizontalDock::memoryDepthChanged, dsoControl,
              [ dsoControl ]( unsigned depth ) { dsoControl->setMemoryDepth( depth ); } );
+    connect( horizontalDock, &HorizontalDock::reducedOversamplingChanged, dsoControl,
+             [ dsoControl ]( bool reduced ) { dsoControl->setReducedOversampling( reduced ); } );
     connect( horizontalDock, &HorizontalDock::formatChanged, spectrumDock, [ = ]( Dso::GraphFormat format ) {
         ui->actionHistogram->setEnabled( format == Dso::GraphFormat::TY );
         spectrumDock->enableSpectrumDock( format == Dso::GraphFormat::TY );

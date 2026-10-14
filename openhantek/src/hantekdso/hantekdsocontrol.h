@@ -91,6 +91,11 @@ class HantekDsoControl : public QObject {
 
     unsigned getMemoryDepth() const { return memoryDepth; }
 
+    /// The samplerate table in use: with reduced oversampling for deep memory, if selected and available
+    const std::vector< Dso::FixedSampleRate > &sampleRates() const {
+        return useReducedRates ? specification->fixedSampleRatesReduced : specification->fixedSampleRates;
+    }
+
     bool isSamplingUI() const { return samplingUI; }
 
     /// Return the associated usb device.
@@ -198,6 +203,10 @@ class HantekDsoControl : public QObject {
     void updateAcquireSamples();
     /// Memory depth usable with this oversampling, limited by the max. USB transfer size
     unsigned depthLimit( unsigned oversampling ) const;
+    bool reducedOversampling = false;               ///< user setting, effective only for deep memory
+    std::atomic< bool > useReducedRates{ false };   ///< sampleRates() returns the reduced table
+    bool updateSampleRateTable();                   ///< select the table, true if it was changed
+    void recalculateSamplerate();                   ///< apply the current target with new limits
     DSOsamples result;
     unsigned expectedSampleCount = 0; ///< The expected total number of samples at
                                       /// the last check before sampling started
@@ -249,6 +258,10 @@ class HantekDsoControl : public QObject {
     /// \brief Sets the memory depth, i.e. the max. number of samples per channel and acquisition.
     /// \param depth One of MEMORY_DEPTHS, other values are rounded to the next supported value.
     void setMemoryDepth( unsigned depth );
+
+    /// \brief Uses less oversampling at slow samplerates to allow longer records (deep memory only).
+    /// \param reduced true: lowest raw samplerate (more samples, less noise reduction).
+    void setReducedOversampling( bool reduced );
 
     /// \brief Enables/disables filtering of the given channel.
     /// \param channel The channel that should be set.

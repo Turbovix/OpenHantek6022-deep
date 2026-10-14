@@ -81,6 +81,32 @@ static void initSpecifications( Dso::ControlSpecification &specification ) {
         { 48e6, 48, 1 }     //
     };
 
+    // same samplerates with the lowest raw samplerate supported by the FW (min. 20 kS/s)
+    specification.fixedSampleRatesReduced = {
+        // samplerate, sampleId, downsampling
+        { 100, 102, 200 }, // 200x downsampling from 20 kS/s (lowest raw samplerate)
+        { 200, 102, 100 }, // 100x downsampling from 20 kS/s
+        { 500, 102, 40 },  //
+        { 1e3, 102, 20 },  //
+        { 2e3, 102, 10 },  //
+        { 5e3, 102, 4 },   //
+        { 10e3, 102, 2 },  //
+        { 20e3, 102, 1 },  // no oversampling
+        { 50e3, 105, 1 },  //
+        { 100e3, 110, 1 }, //
+        { 200e3, 120, 1 }, //
+        { 500e3, 150, 1 }, //
+        { 1e6, 1, 1 },     //
+        { 2e6, 2, 1 },     //
+        { 5e6, 5, 1 },     //
+        { 10e6, 10, 1 },   // same as fixedSampleRates from here on
+        { 12e6, 12, 1 },   //
+        { 15e6, 15, 1 },   //
+        { 24e6, 24, 1 },   //
+        { 30e6, 30, 1 },   //
+        { 48e6, 48, 1 }    //
+    };
+
     // AC requires AC/DC HW mod like DDS120, enable with "cmake -D HANTEK_AC=1 .." or config option
     specification.couplings = { Dso::Coupling::DC, Dso::Coupling::AC };
     specification.triggerModes = {

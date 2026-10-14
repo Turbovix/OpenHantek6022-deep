@@ -48,6 +48,10 @@ struct ControlSpecification {
 
     /// For devices that support only fixed sample rates
     std::vector< FixedSampleRate > fixedSampleRates;
+    /// Optional alternative to fixedSampleRates with the same (effective) samplerates but less
+    /// oversampling, i.e. less raw samples per displayed sample. This allows longer records
+    /// (deep memory) at slow samplerates at the cost of a lower noise reduction.
+    std::vector< FixedSampleRate > fixedSampleRatesReduced;
 
     // Calibration
     /// DSO6022 has calibration in small EEPROM, DDS120 has big fw EEPROM
