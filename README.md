@@ -1,4 +1,19 @@
 # OpenHantek6022
+
+> **OpenHantek6022-deep** — this is a variant of [OpenHantek6022](https://github.com/OpenHantek/OpenHantek6022)
+> with a selectable **memory depth** (20k … 4M samples per channel) for the DSO-6022BE/BL.
+> It is not the official project and not supported by its maintainers; the badges and release links
+> below refer to the official project. Changes in this variant (branch `memoria-profunda`):
+> - "Memory depth" selector in the Horizontal dock: higher samplerates for slow timebases,
+>   e.g. 1 ms/div: 12 MS/s instead of 1 MS/s; 10 ms/div: 12 MS/s instead of 100 kS/s (with 4M).
+> - "Oversampling: Normal / Reduced": 100 ms/div with 4M samples: 2 MS/s instead of 20 kS/s.
+> - Faster drawing (min/max per pixel column) and fft of long records.
+> - Fixes: reuse of fft plans with a different size, CSV time precision, JSON `null` values.
+> - Tested on Linux with a DSO-6022BE only. Gapless USB transfers up to 15 MB on Linux, 4 MB elsewhere.
+>
+> Build and usage are the same as for the official project (see below).
+> License: GPL-2.0-or-later, like the original.
+
 [![GitHub CI](https://github.com/OpenHantek/OpenHantek6022/actions/workflows/build.yml/badge.svg)](https://github.com/OpenHantek/OpenHantek6022/actions/workflows/build.yml)
 [![Stability: Active](https://masterminds.github.io/stability/active.svg)](https://masterminds.github.io/stability/active.html)
 [![Downloads total](https://img.shields.io/github/downloads/OpenHantek/OpenHantek6022/total?color=blue)](https://github.com/OpenHantek/OpenHantek6022/releases)
