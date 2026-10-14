@@ -36,8 +36,8 @@ class SpectrumGenerator : public Processor {
     std::vector< double > window;                                           ///< storage for the tapering window
     fftw_plan fftPlan_R2HC = nullptr;
     fftw_plan fftPlan_HC2R = nullptr;
-    int fftPlanSize = 0;              ///< sample count the reused fft plans were created for
-    std::vector< double > decimated;  ///< averaged samples of long records used as fft input
+    int fftPlanSize = 0;             ///< sample count the reused fft plans were created for
+    std::vector< double > decimated; ///< averaged samples of long records used as fft input
     void destroyFftPlans();
     QString note;
     const QString &calculateNote( double frequency );

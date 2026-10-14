@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QDebug>
-#include <algorithm>
 #include <QMutex>
+#include <algorithm>
 #include <math.h>
 
 #include "graphgenerator.h"

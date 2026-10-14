@@ -203,10 +203,10 @@ class HantekDsoControl : public QObject {
     void updateAcquireSamples();
     /// Memory depth usable with this oversampling, limited by the max. USB transfer size
     unsigned depthLimit( unsigned oversampling ) const;
-    bool reducedOversampling = false;               ///< user setting, effective only for deep memory
-    std::atomic< bool > useReducedRates{ false };   ///< sampleRates() returns the reduced table
-    bool updateSampleRateTable();                   ///< select the table, true if it was changed
-    void recalculateSamplerate();                   ///< apply the current target with new limits
+    bool reducedOversampling = false;             ///< user setting, effective only for deep memory
+    std::atomic< bool > useReducedRates{ false }; ///< sampleRates() returns the reduced table
+    bool updateSampleRateTable();                 ///< select the table, true if it was changed
+    void recalculateSamplerate();                 ///< apply the current target with new limits
     DSOsamples result;
     unsigned expectedSampleCount = 0; ///< The expected total number of samples at
                                       /// the last check before sampling started

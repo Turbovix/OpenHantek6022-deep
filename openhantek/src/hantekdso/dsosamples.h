@@ -28,8 +28,7 @@ const int SAMPLESIZE_ROLL = 40 * 256;
 /// Selectable memory depths (max. samples per channel and acquisition).
 /// The acquisition uses only as many samples as needed for two screens at the
 /// current samplerate, bounded by SAMPLESIZE and the selected memory depth.
-inline const std::vector< unsigned > MEMORY_DEPTHS = { 20000,  50000,   100000,  200000,
-                                                       500000, 1000000, 2000000, 4000000 };
+inline const std::vector< unsigned > MEMORY_DEPTHS = { 20000, 50000, 100000, 200000, 500000, 1000000, 2000000, 4000000 };
 
 /// Max. size of one USB bulk transfer. Linux limits the memory of all usbfs transfers
 /// to usbfs_memory_mb (default 16 MiB), so keep some margin. Mind the oversampling:

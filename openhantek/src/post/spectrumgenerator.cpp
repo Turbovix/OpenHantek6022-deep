@@ -104,7 +104,8 @@ void SpectrumGenerator::process( PPresult *result ) {
         const double fftInterval = channelData->voltage.interval * decimation;
         int sampleCount = int( fftInput->size() );
         if ( scope->verboseLevel > 5 )
-            qDebug() << "     SpectrumGenerator::process()" << channel << "sampleCount:" << sampleCount << "decimation:" << decimation;
+            qDebug() << "     SpectrumGenerator::process()" << channel << "sampleCount:" << sampleCount
+                     << "decimation:" << decimation;
         // a reused fft plan is only valid for the sample count it was created for
         if ( fftPlanSize != sampleCount )
             destroyFftPlans();

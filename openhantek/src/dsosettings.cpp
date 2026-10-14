@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QApplication>
-#include <algorithm>
 #include <QColor>
 #include <QFileInfo>
 #include <QSettings>
+#include <algorithm>
 
 #include "dsosettings.h"
 #include "hantekdso/dsosamples.h"

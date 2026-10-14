@@ -3,8 +3,8 @@
 // #define TIMESTAMPDEBUG
 
 #include <QDebug>
-#include <algorithm>
 #include <QTimer>
+#include <algorithm>
 
 #include <QtCore>
 

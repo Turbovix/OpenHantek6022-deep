@@ -10,8 +10,8 @@
 #include <QSignalBlocker>
 #include <QThread>
 
-#include <cmath>
 #include <algorithm>
+#include <cmath>
 
 #include "HorizontalDock.h"
 #include "dockwindows.h"
@@ -367,6 +367,6 @@ void HorizontalDock::memoryDepthIndexSelected( int index ) {
         qDebug() << "  HDock::memoryDepthIndexSelected()" << index << depth;
     scope->horizontal.memoryDepth = depth;
     oversamplingComboBox->setEnabled( !rollMode && depth > unsigned( SAMPLESIZE ) ); // only for deep memory
-    calculateSamplerateSteps( scope->horizontal.timebase ); // the samplerate limit depends on the depth
+    calculateSamplerateSteps( scope->horizontal.timebase );                          // the samplerate limit depends on the depth
     emit memoryDepthChanged( depth );
 }
