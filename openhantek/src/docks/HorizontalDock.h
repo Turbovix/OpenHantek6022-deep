@@ -64,6 +64,9 @@ class HorizontalDock : public QDockWidget {
     /// \brief Selects normal or reduced oversampling (effective only for deep memory).
     void setReducedOversampling( bool reduced );
 
+    /// \brief Steps the timebase like the spin box arrows (1-2-5 steps), emits timebaseChanged.
+    void requestTimebaseStep( int steps );
+
   public slots:
     /// \brief Loads settings into GUI
     /// \param scope Settings to load

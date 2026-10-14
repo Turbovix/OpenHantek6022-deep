@@ -370,3 +370,6 @@ void HorizontalDock::memoryDepthIndexSelected( int index ) {
     calculateSamplerateSteps( scope->horizontal.timebase );                          // the samplerate limit depends on the depth
     emit memoryDepthChanged( depth );
 }
+
+
+void HorizontalDock::requestTimebaseStep( int steps ) { timebaseSiSpinBox->stepBy( steps ); }

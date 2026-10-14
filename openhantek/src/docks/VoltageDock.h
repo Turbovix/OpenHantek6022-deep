@@ -60,6 +60,16 @@ class VoltageDock : public QDockWidget {
     /// \param used True if the channel should be inverted, false otherwise.
     void setInverted( ChannelID channel, bool inverted );
 
+    // Requests from other widgets (e.g. the channel sidebar), they behave like user input:
+    // the dock widgets are changed and the usual signals are emitted
+    void requestGainStep( ChannelID channel, int steps ); ///< +1: next larger V/div
+    void requestUsed( ChannelID channel, bool used );
+    void requestInverted( ChannelID channel, bool inverted );
+    void requestMisc( ChannelID channel, int index ); ///< coupling (CHx) or math mode (MATH)
+    void requestAttn( ChannelID channel, int attn );
+    QStringList miscTexts( ChannelID channel ) const; ///< couplings (CHx) or math modes (MATH)
+    QString gainText( ChannelID channel ) const;
+
   public slots:
     /// \brief Loads settings into GUI
     /// \param scope Settings to load

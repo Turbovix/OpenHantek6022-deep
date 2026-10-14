@@ -274,3 +274,49 @@ void VoltageDock::updateGainStrings( double attnValue ) {
         gainStrings << valueToString( gainStep.Vdiv * attnValue, UNIT_VOLTS, 0 );
     }
 }
+
+
+void VoltageDock::requestGainStep( ChannelID channel, int steps ) {
+    if ( channel >= channelBlocks.size() )
+        return;
+    QComboBox *box = channelBlocks[ channel ].gainComboBox;
+    box->setCurrentIndex( qBound( 0, box->currentIndex() + steps, box->count() - 1 ) );
+}
+
+
+void VoltageDock::requestUsed( ChannelID channel, bool used ) {
+    if ( channel < channelBlocks.size() )
+        channelBlocks[ channel ].usedCheckBox->setChecked( used );
+}
+
+
+void VoltageDock::requestInverted( ChannelID channel, bool inverted ) {
+    if ( channel < channelBlocks.size() )
+        channelBlocks[ channel ].invertCheckBox->setChecked( inverted );
+}
+
+
+void VoltageDock::requestMisc( ChannelID channel, int index ) {
+    if ( channel < channelBlocks.size() && index >= 0 && index < channelBlocks[ channel ].miscComboBox->count() )
+        channelBlocks[ channel ].miscComboBox->setCurrentIndex( index );
+}
+
+
+void VoltageDock::requestAttn( ChannelID channel, int attn ) {
+    if ( channel < channelBlocks.size() )
+        channelBlocks[ channel ].attnSpinBox->setValue( attn );
+}
+
+
+QStringList VoltageDock::miscTexts( ChannelID channel ) const {
+    QStringList texts;
+    if ( channel < channelBlocks.size() )
+        for ( int index = 0; index < channelBlocks[ channel ].miscComboBox->count(); ++index )
+            texts << channelBlocks[ channel ].miscComboBox->itemText( index );
+    return texts;
+}
+
+
+QString VoltageDock::gainText( ChannelID channel ) const {
+    return channel < channelBlocks.size() ? channelBlocks[ channel ].gainComboBox->currentText() : QString();
+}

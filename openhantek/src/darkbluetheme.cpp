@@ -85,6 +85,30 @@ QScrollBar::handle { background: #30363d; border-radius: 5px; min-height: 24px; 
 QScrollBar::handle:hover { background: #484f58; }
 QScrollBar::add-line, QScrollBar::sub-line { width: 0; height: 0; }
 QStatusBar { background: #0d1117; color: #8b949e; }
+
+/* alternative layout (scopelayout.cpp) */
+QToolBar#scopeTopBar { background: #0d1117; border-bottom: 1px solid #21262d; padding: 6px; spacing: 8px; }
+QPushButton#runButton { min-width: 110px; min-height: 44px; font-size: 13pt; font-weight: 600; color: #ffffff;
+    background: #238636; border: 1px solid #2ea043; border-radius: 6px; }
+QPushButton#runButton:hover { background: #2ea043; }
+QPushButton#runButton[running="false"] { background: #9a4900; border-color: #bd561d; }
+QPushButton#runButton[running="false"]:hover { background: #bd561d; }
+QFrame#barGroup { background: #161b22; border: 1px solid #30363d; border-radius: 6px; }
+QLabel#barGroupTitle, QLabel#detailsTitle { color: #8b949e; font-size: 8pt; }
+QToolButton#valueButton { background: transparent; border: none; padding: 2px 6px; font-size: 11pt; }
+QToolButton#valueButton:hover { background: #21262d; border-radius: 4px; }
+QPushButton#stepButton { min-width: 26px; max-width: 26px; padding: 2px; font-size: 12pt; font-weight: 600; }
+QPushButton#segment { padding: 3px 10px; border-radius: 4px; }
+QPushButton#segment:checked { background: #1f6feb; border-color: #388bfd; color: #ffffff; }
+QFrame#channelSidebar { background: #0d1117; }
+QPushButton#channelCard { text-align: left; padding: 6px 10px; border: 1px solid #30363d; border-radius: 6px;
+    background: #161b22; font-weight: 600; min-height: 36px; }
+QFrame#channelDetails { background: #161b22; border: 1px solid #30363d; border-radius: 6px; }
+QPushButton#menuButton { background: transparent; border: none; border-radius: 6px; color: #8b949e; padding: 6px 10px; text-align: left; }
+QPushButton#menuButton:hover { background: #21262d; color: #e6edf3; }
+QPushButton#menuButton:checked { color: #e6edf3; background: #161b22; border-left: 2px solid #1f6feb; border-radius: 0; }
+QLabel#connectionLabel { color: #f85149; padding: 0 8px; }
+QLabel#connectionLabel[connected="true"] { color: #3fb950; }
 )";
 
 

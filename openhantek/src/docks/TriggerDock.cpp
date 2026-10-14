@@ -7,6 +7,7 @@
 #include <QDockWidget>
 #include <QLabel>
 #include <QSignalBlocker>
+#include <algorithm>
 
 #include <cmath>
 
@@ -165,3 +166,13 @@ void TriggerDock::setSmooth( int smooth ) {
     QSignalBlocker blocker( smoothComboBox );
     smoothComboBox->setCurrentIndex( int( smooth ) );
 }
+
+
+void TriggerDock::requestMode( Dso::TriggerMode mode ) {
+    auto it = std::find( mSpec->triggerModes.begin(), mSpec->triggerModes.end(), mode );
+    if ( it != mSpec->triggerModes.end() )
+        modeComboBox->setCurrentIndex( int( it - mSpec->triggerModes.begin() ) );
+}
+
+
+const std::vector< Dso::TriggerMode > &TriggerDock::triggerModes() const { return mSpec->triggerModes; }

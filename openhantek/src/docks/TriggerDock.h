@@ -45,6 +45,11 @@ class TriggerDock : public QDockWidget {
     /// \param slope The trigger slope.
     void setSlope( Dso::Slope slope );
 
+    /// \brief Selects the trigger mode like user input, emits modeChanged.
+    void requestMode( Dso::TriggerMode mode );
+    /// \brief The trigger modes supported by the scope.
+    const std::vector< Dso::TriggerMode > &triggerModes() const;
+
   public slots:
     /// \brief Loads settings into GUI
     /// \param scope Settings to load

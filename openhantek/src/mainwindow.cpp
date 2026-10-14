@@ -20,16 +20,20 @@
 #include "viewconstants.h"
 
 #include "dsosettings.h"
+#include "scopelayout.h"
 
 #include <QDesktopServices>
 #include <QDir>
 #include <QFileDialog>
+#include <QLabel>
 #include <QLoggingCategory>
 #include <QMessageBox>
 #include <QPainter>
 #include <QPalette>
 #include <QPrintDialog>
 #include <QPrinter>
+#include <QSettings>
+#include <QStyle>
 #include <QTimer>
 #include <QValidator>
 
@@ -226,6 +230,83 @@ MainWindow::MainWindow( HantekDsoControl *dsoControl, DsoSettings *settings, Exp
     deviceCommandWidgets = { voltageDock, horizontalDock, triggerDock, spectrumDock, dsoWidget };
     deviceCommandActions = { ui->actionOpen, ui->actionSampling, ui->actionRefresh, ui->actionCalibrateOffset,
                              ui->actionManualCommand };
+
+    // Alternative layout for the "dark blue" theme: top bar and channel sidebar replace the
+    // tool bar and the voltage dock, the other docks are shown on request
+    QSettings globalSettings;
+    if ( Dso::Themes::THEME_DARKBLUE == Dso::Themes( dsoSettings->view.theme ) ) {
+        QAction *screenshotAction = nullptr;
+        QAction *csvAction = nullptr;
+        for ( QAction *exportAction : ui->menuExport->actions() ) {
+            if ( exportAction->isSeparator() )
+                continue;
+            if ( !screenshotAction )
+                screenshotAction = exportAction; // 1st entry: "Screenshot"
+            if ( exportAction->text().contains( "CSV" ) )
+                csvAction = exportAction;
+        }
+        QList< QAction * > fileActions;
+        for ( QAction *fileAction : { screenshotAction, csvAction, ui->actionSettings } )
+            if ( fileAction )
+                fileActions << fileAction;
+        ScopeTopBar *topBar = new ScopeTopBar( scope, horizontalDock, triggerDock, ui->actionSampling,
+                                               { ui->actionZoom, ui->actionMeasure }, fileActions, this );
+        addToolBar( Qt::TopToolBarArea, topBar );
+
+        // the docks are not closable, so their toggleViewAction() is disabled -> own actions
+        auto dockAction = [ this ]( QDockWidget *dock ) {
+            QAction *action = new QAction( dock->windowTitle(), this );
+            action->setCheckable( true );
+            action->setChecked( dock->isVisible() );
+            connect( action, &QAction::toggled, dock, &QDockWidget::setVisible );
+            connect( dock, &QDockWidget::visibilityChanged, action,
+                     [ action, dock ]() { action->setChecked( dock->isVisible() ); } );
+            return action;
+        };
+        QList< QAction * > menuActions = { dockAction( horizontalDock ), dockAction( triggerDock ), dockAction( spectrumDock ),
+                                           ui->actionHistogram, ui->actionPhosphor };
+        ChannelSidebar *sidebar = new ChannelSidebar( scope, &dsoSettings->view, spec, voltageDock, menuActions, this );
+        QDockWidget *sidebarDock = new QDockWidget( tr( "Channels" ), this );
+        sidebarDock->setObjectName( "channelSidebarDock" ); // needed by QMainWindow::saveState()
+        sidebarDock->setTitleBarWidget( new QWidget( sidebarDock ) );
+        sidebarDock->setFeatures( QDockWidget::NoDockWidgetFeatures );
+        sidebarDock->setWidget( sidebar );
+        addDockWidget( Qt::LeftDockWidgetArea, sidebarDock );
+
+        ui->toolBar->hide();
+        voltageDock->hide();
+        if ( !globalSettings.value( "view/scopeLayoutActive", false ).toBool() ) { // first start: wide screen
+            horizontalDock->hide();
+            triggerDock->hide();
+            spectrumDock->hide();
+            globalSettings.setValue( "view/scopeLayoutActive", true );
+        }
+        deviceCommandWidgets << topBar << sidebar;
+
+        // connection state in the status bar
+        QLabel *connectionLabel = new QLabel();
+        connectionLabel->setObjectName( "connectionLabel" );
+        statusBar()->addWidget( connectionLabel );
+        QTimer *connectionTimer = new QTimer( this );
+        connect( connectionTimer, &QTimer::timeout, this, [ connectionLabel, dsoControl ]() {
+            QString state = !dsoControl->getDevice()->isRealHW() ? tr( "Demo" )
+                            : dsoControl->isDeviceAvailable()    ? tr( "Connected" )
+                                                                 : tr( "Disconnected" );
+            connectionLabel->setText( "● " + state );
+            connectionLabel->setProperty( "connected", dsoControl->isDeviceAvailable() );
+            connectionLabel->style()->unpolish( connectionLabel );
+            connectionLabel->style()->polish( connectionLabel );
+        } );
+        connectionTimer->start( 500 );
+    } else if ( globalSettings.value( "view/scopeLayoutActive", false ).toBool() ) {
+        // back from the alternative layout: show the hidden tool bar and docks again
+        ui->toolBar->show();
+        voltageDock->show();
+        horizontalDock->show();
+        triggerDock->show();
+        spectrumDock->show();
+        globalSettings.setValue( "view/scopeLayoutActive", false );
+    }
 
     if ( dsoControl->getDevice()->isRealHW() ) { // enable online calibration and manual command input
         // Command field inside the status bar
