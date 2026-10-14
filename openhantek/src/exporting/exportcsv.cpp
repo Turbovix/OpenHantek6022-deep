@@ -79,7 +79,8 @@ void ExporterCSV::fillData( QTextStream &csvStream, const ExporterData &dto, con
 
     for ( unsigned int row = 0; row < dto.getMaxRow(); ++row ) {
 
-        csvStream << QLocale().toString( dto.getTimeInterval() * row );
+        // 10 significant digits: unique time values also for long records (deep memory)
+        csvStream << QLocale().toString( dto.getTimeInterval() * row, 'g', 10 );
         for ( ChannelID channel = 0; channel < dto.getChannelsCount(); ++channel ) {
             if ( voltageData[ channel ] != nullptr ) {
                 csvStream << sep;
@@ -89,7 +90,7 @@ void ExporterCSV::fillData( QTextStream &csvStream, const ExporterData &dto, con
             }
         }
         if ( dto.isSpectrumUsed() ) {
-            csvStream << sep << QLocale().toString( dto.getFreqInterval() * row );
+            csvStream << sep << QLocale().toString( dto.getFreqInterval() * row, 'g', 10 );
             for ( ChannelID channel = 0; channel < dto.getChannelsCount(); ++channel ) {
                 if ( spectrumData[ channel ] != nullptr ) {
                     csvStream << sep;
