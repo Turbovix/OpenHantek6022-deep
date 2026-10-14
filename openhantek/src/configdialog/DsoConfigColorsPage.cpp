@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "DsoConfigColorsPage.h"
+#include "darkbluetheme.h"
 
 DsoConfigColorsPage::DsoConfigColorsPage( DsoSettings *settings, QWidget *parent ) : QWidget( parent ), settings( settings ) {
     // Initialize elements
@@ -144,13 +145,29 @@ DsoConfigColorsPage::DsoConfigColorsPage( DsoSettings *settings, QWidget *parent
     colorsLayout->addWidget( fontWeightSpinBox, row, COL_LABEL + 1 );
 
     QStringList themeStrings;
-    themeStrings << tr( "Auto" ) << tr( "Light" ) << tr( "Dark" );
+    themeStrings << tr( "Auto" ) << tr( "Light" ) << tr( "Dark" ) << tr( "Dark blue" );
     themeLabel = new QLabel( tr( "Theme (restart needed to apply the change)" ) );
     themeComboBox = new QComboBox();
     themeComboBox->addItems( themeStrings );
     themeComboBox->setCurrentIndex( settings->view.theme );
     colorsLayout->addWidget( themeLabel, ++row, COL_LABEL );
     colorsLayout->addWidget( themeComboBox, row, COL_LABEL + 1 );
+    // selecting the dark blue theme proposes matching screen colors (can be changed before "OK")
+    connect( themeComboBox, QOverload< int >::of( &QComboBox::currentIndexChanged ), this, [ this ]( int index ) {
+        if ( Dso::Themes::THEME_DARKBLUE != Dso::Themes( index ) )
+            return;
+        backgroundColorBox->setColor( DarkBlueTheme::screenBackground );
+        gridColorBox->setColor( DarkBlueTheme::screenGrid );
+        axesColorBox->setColor( DarkBlueTheme::screenAxes );
+        borderColorBox->setColor( DarkBlueTheme::screenBorder );
+        markersColorBox->setColor( DarkBlueTheme::screenMarkers );
+        textColorBox->setColor( DarkBlueTheme::screenText );
+        for ( size_t channel = 0; channel < screenChannelColorBox.size(); ++channel ) {
+            QColor color = DarkBlueTheme::screenVoltage[ channel % DarkBlueTheme::screenVoltage.size() ];
+            screenChannelColorBox[ channel ]->setColor( color );
+            screenSpectrumColorBox[ channel ]->setColor( color.darker( 140 ) );
+        }
+    } );
 
     colorsGroup = new QGroupBox( tr( "Screen and Print Colors" ) );
     colorsGroup->setLayout( colorsLayout );

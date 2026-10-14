@@ -64,7 +64,8 @@ enum InterpolationMode {
 enum Themes {
     THEME_AUTO = 0, ///< Use the system theme
     THEME_LIGHT,    ///< Force a light theme
-    THEME_DARK      ///< Force a dark theme
+    THEME_DARK,     ///< Force a dark theme
+    THEME_DARKBLUE  ///< Flat dark theme with blue accent and rounded controls
 };
 
 // QString channelModeString(ChannelMode mode);

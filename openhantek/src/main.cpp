@@ -28,6 +28,7 @@
 #include <memory>
 
 // Settings
+#include "darkbluetheme.h"
 #include "dsosettings.h"
 #include "viewsettings.h"
 
@@ -101,6 +102,7 @@ int main( int argc, char *argv[] ) {
     int theme = 0;                      // set to "auto"
     int toolTipVisible = 1;             // start with tooltips
     bool styleFusion = false;           // use system style
+    bool fontOptionSet = false;         // font defined on command line
     QString configFileName = QString();
 
     { // do this early at program start ...
@@ -200,6 +202,7 @@ int main( int argc, char *argv[] ) {
         autoConnect = !p.isSet( noAutoConnectOption );
         if ( p.isSet( fontOption ) )
             font = p.value( "font" );
+        fontOptionSet = p.isSet( fontOption );
         if ( p.isSet( sizeOption ) )
             fontSize = p.value( "size" ).toInt();
         if ( p.isSet( weightOption ) )
@@ -228,7 +231,8 @@ int main( int argc, char *argv[] ) {
     // Windows default: "Windows"
     // kvantum style disturbs UI, fall back to Fusion style with dark default theme
     bool isKvantum = openHantekApplication.style()->objectName().toLower().startsWith( "kvantum" );
-    if ( styleFusion || isKvantum ) {
+    const bool darkBlue = Dso::Themes::THEME_DARKBLUE == Dso::Themes( theme );
+    if ( styleFusion || isKvantum || darkBlue ) { // the dark blue style sheet is made for "Fusion"
         // smaller "Fusion" widgets allow stacking of all four docks even on 1280x720 screen
         if ( verboseLevel ) {
             qDebug() << startupTime.elapsed() << "ms:"
@@ -291,6 +295,14 @@ int main( int argc, char *argv[] ) {
 #endif
     }
     openHantekApplication.setPalette( palette );
+    if ( darkBlue ) {
+        DarkBlueTheme::apply( openHantekApplication );
+        if ( !fontOptionSet ) { // use the bundled font unless the user selected one
+            QString family = DarkBlueTheme::loadFont();
+            if ( !family.isEmpty() )
+                font = family;
+        }
+    }
 
 #if 0
     openHantekApplication.setStyleSheet( "QToolTip { border: 2px solid white; padding: 2px; border-radius: 5px; font-weight: bold; "

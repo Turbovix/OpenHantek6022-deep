@@ -47,6 +47,13 @@
         <file>images/darktheme/save_as.svg</file>
         <file>images/darktheme/settings.svg</file>
         <file>images/darktheme/terminal.svg</file>
+
+        <file>images/darkblue/check.svg</file>
+        <file>images/darkblue/up.svg</file>
+        <file>images/darkblue/down.svg</file>
+        <file>fonts/selawk.ttf</file>
+        <file>fonts/selawksb.ttf</file>
+        <file>fonts/selawkb.ttf</file>
     </qresource>
     <qresource prefix="/config">
         <file alias="spectrum.png">images/config/spectrum.png</file>

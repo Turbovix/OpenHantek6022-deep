@@ -237,32 +237,32 @@
 <context>
     <name>DsoConfigColorsPage</name>
     <message>
-        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="24"/>
+        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="25"/>
         <source>Axes</source>
         <translation>Eixos</translation>
     </message>
     <message>
-        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="16"/>
+        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="17"/>
         <source>Background</source>
         <translation>Fundo</translation>
     </message>
     <message>
-        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="28"/>
+        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="29"/>
         <source>Border</source>
         <translation>Borda</translation>
     </message>
     <message>
-        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="20"/>
+        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="21"/>
         <source>Grid</source>
         <translation>Grade</translation>
     </message>
     <message>
-        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="32"/>
+        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="33"/>
         <source>Markers</source>
         <translation>Marcadores</translation>
     </message>
     <message>
-        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="36"/>
+        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="37"/>
         <source>Text</source>
         <translation>Texto</translation>
     </message>
@@ -271,48 +271,53 @@
         <translation type="vanished">Exportar imagens com cores de tela</translation>
     </message>
     <message>
-        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="155"/>
+        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="172"/>
         <source>Screen and Print Colors</source>
         <translation>Cores de tela e impressão</translation>
     </message>
     <message>
-        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="11"/>
+        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="12"/>
         <source>Screen</source>
         <translation>Tela</translation>
     </message>
     <message>
-        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="41"/>
-        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="45"/>
+        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="42"/>
+        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="46"/>
         <source>Voltage</source>
         <translation>Tensão</translation>
     </message>
     <message>
-        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="138"/>
+        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="139"/>
         <source>Font weight (restart needed to apply the change)</source>
         <translation>Peso da fonte (reinício necessário para aplicar a mudança)</translation>
     </message>
     <message>
-        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="147"/>
+        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="148"/>
         <source>Auto</source>
         <translation>Automático</translation>
     </message>
     <message>
-        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="147"/>
+        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="148"/>
         <source>Light</source>
         <translation>Luz</translation>
     </message>
     <message>
-        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="147"/>
+        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="148"/>
         <source>Dark</source>
         <translation>Escuro</translation>
     </message>
     <message>
         <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="148"/>
+        <source>Dark blue</source>
+        <translation>Azul escuro</translation>
+    </message>
+    <message>
+        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="149"/>
         <source>Theme (restart needed to apply the change)</source>
         <translation>Tema (reinício necessário para aplicar a mudança)</translation>
     </message>
     <message>
-        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="13"/>
+        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="14"/>
         <source>Print</source>
         <translation>Impressão</translation>
     </message>
@@ -321,23 +326,23 @@
         <translation type="vanished">Canal</translation>
     </message>
     <message>
-        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="43"/>
-        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="47"/>
+        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="44"/>
+        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="48"/>
         <source>Spectrum</source>
         <translation>Espectro</translation>
     </message>
     <message>
-        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="123"/>
+        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="124"/>
         <source>Fusion style (restart needed to apply the change)</source>
         <translation>Fusion style (reinício necessário para aplicar a mudança)</translation>
     </message>
     <message>
-        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="131"/>
+        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="132"/>
         <source>Font size (restart needed to apply the change)</source>
         <translation>Tamanho da fonte (reinício necessário para aplicar a mudança)</translation>
     </message>
     <message>
-        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="127"/>
+        <location filename="../src/configdialog/DsoConfigColorsPage.cpp" line="128"/>
         <source>Export hardcopy images or pdf files with printer colors</source>
         <translation>Exportar imagens impressas em papel ou arquivos pdf com cores de impressora</translation>
     </message>
@@ -2552,98 +2557,98 @@
 <context>
     <name>main</name>
     <message>
-        <location filename="../src/main.cpp" line="127"/>
-        <location filename="../src/main.cpp" line="168"/>
+        <location filename="../src/main.cpp" line="129"/>
+        <location filename="../src/main.cpp" line="170"/>
         <source>Show the international interface, do not translate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="151"/>
+        <location filename="../src/main.cpp" line="153"/>
         <source>Load config file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="152"/>
+        <location filename="../src/main.cpp" line="154"/>
         <source>File</source>
         <translation>Arquivo</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="155"/>
+        <location filename="../src/main.cpp" line="157"/>
         <source>Demo mode without scope HW</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="158"/>
+        <location filename="../src/main.cpp" line="160"/>
         <source>Use OpenGL ES instead of OpenGL</source>
         <translation>Usar OpenGL ES em vez de OpenGL</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="160"/>
+        <location filename="../src/main.cpp" line="162"/>
         <source>Do not connect automatically</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="163"/>
+        <location filename="../src/main.cpp" line="165"/>
         <source>Force OpenGL SL version 1.20</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="165"/>
+        <location filename="../src/main.cpp" line="167"/>
         <source>Force OpenGL SL version 1.50</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="170"/>
+        <location filename="../src/main.cpp" line="172"/>
         <source>Define the system font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="171"/>
+        <location filename="../src/main.cpp" line="173"/>
         <source>Font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="175"/>
+        <location filename="../src/main.cpp" line="177"/>
         <source>Set the font size (default = %1, 0: automatic from dpi)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="177"/>
+        <location filename="../src/main.cpp" line="179"/>
         <source>Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="181"/>
+        <location filename="../src/main.cpp" line="183"/>
         <source>Set the font weight (default = %1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="183"/>
+        <location filename="../src/main.cpp" line="185"/>
         <source>Weight</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="186"/>
+        <location filename="../src/main.cpp" line="188"/>
         <source>Set the font condensed value (default = %1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="187"/>
+        <location filename="../src/main.cpp" line="189"/>
         <source>Condensed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="190"/>
+        <location filename="../src/main.cpp" line="192"/>
         <source>Reset persistent settings, start with default</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="193"/>
+        <location filename="../src/main.cpp" line="195"/>
         <source>Verbose tracing of program startup, ui and processing steps</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="194"/>
+        <location filename="../src/main.cpp" line="196"/>
         <source>Level</source>
         <translation type="unfinished"></translation>
     </message>
