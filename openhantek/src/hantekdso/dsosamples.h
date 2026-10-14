@@ -35,3 +35,6 @@ inline const std::vector< unsigned > MEMORY_DEPTHS = { 20000,  50000,   100000, 
 /// to usbfs_memory_mb (default 16 MiB), so keep some margin. Mind the oversampling:
 /// one displayed sample needs up to 200 raw samples at slow samplerates.
 const unsigned MAX_TRANSFER_BYTES = 15000000;
+
+/// Longer records are averaged in blocks before the spectrum calculation (fft).
+const int SPECTRUM_MAX_SAMPLES = 100000;

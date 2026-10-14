@@ -28,16 +28,20 @@ SpectrumGenerator::SpectrumGenerator( const DsoSettingsScope *scope, const DsoSe
 SpectrumGenerator::~SpectrumGenerator() {
     if ( scope->verboseLevel > 1 )
         qDebug() << " SpectrumGenerator::~SpectrumGenerator()";
-    if ( analysis->reuseFftPlan ) {
-        if ( fftPlan_R2HC ) {
-            fftw_destroy_plan( fftPlan_R2HC );
-            fftPlan_R2HC = nullptr;
-        }
-        if ( fftPlan_HC2R ) {
-            fftw_destroy_plan( fftPlan_HC2R );
-            fftPlan_HC2R = nullptr;
-        }
+    destroyFftPlans();
+}
+
+
+void SpectrumGenerator::destroyFftPlans() {
+    if ( fftPlan_R2HC ) {
+        fftw_destroy_plan( fftPlan_R2HC );
+        fftPlan_R2HC = nullptr;
     }
+    if ( fftPlan_HC2R ) {
+        fftw_destroy_plan( fftPlan_HC2R );
+        fftPlan_HC2R = nullptr;
+    }
+    fftPlanSize = 0;
 }
 
 
@@ -77,9 +81,33 @@ void SpectrumGenerator::process( PPresult *result ) {
             channelData->spectrum.samples.clear();
             continue;
         }
-        int sampleCount = int( channelData->voltage.samples.size() );
+        const std::vector< double > &voltage = channelData->voltage.samples;
+        const int voltageCount = int( voltage.size() );
+        // Long records (deep memory) are averaged in blocks of "decimation" samples before the fft.
+        // This keeps the fft fast and acts as anti-aliasing filter for the reduced samplerate.
+        // DC and RMS values are calculated from all samples.
+        unsigned decimation = 1;
+        const std::vector< double > *fftInput = &voltage;
+        if ( voltageCount > SPECTRUM_MAX_SAMPLES ) {
+            decimation = unsigned( ( voltageCount + SPECTRUM_MAX_SAMPLES - 1 ) / SPECTRUM_MAX_SAMPLES );
+            size_t count = voltage.size() / decimation / 1000 * 1000; // multiple of 2, 5 for a fast fft
+            decimated.resize( count );
+            auto in = voltage.cbegin();
+            for ( auto &out : decimated ) {
+                double sum = 0.0;
+                for ( unsigned iii = 0; iii < decimation; ++iii )
+                    sum += *in++;
+                out = sum / decimation;
+            }
+            fftInput = &decimated;
+        }
+        const double fftInterval = channelData->voltage.interval * decimation;
+        int sampleCount = int( fftInput->size() );
         if ( scope->verboseLevel > 5 )
-            qDebug() << "     SpectrumGenerator::process()" << channel << "sampleCount:" << sampleCount;
+            qDebug() << "     SpectrumGenerator::process()" << channel << "sampleCount:" << sampleCount << "decimation:" << decimation;
+        // a reused fft plan is only valid for the sample count it was created for
+        if ( fftPlanSize != sampleCount )
+            destroyFftPlans();
 
         // persistent window function, (re)build in case of changes only
         if ( previousWindowFunction != analysis->spectrumWindow || window.size() != size_t( sampleCount ) ) {
@@ -203,7 +231,7 @@ void SpectrumGenerator::process( PPresult *result ) {
             break;
 
         // Set sampling interval
-        channelData->spectrum.interval = 1.0 / channelData->voltage.interval / double( sampleCount );
+        channelData->spectrum.interval = 1.0 / fftInterval / double( sampleCount );
 
         // Number of real/complex samples
         int dftLength = sampleCount / 2;
@@ -222,8 +250,8 @@ void SpectrumGenerator::process( PPresult *result ) {
         if ( left < 0 )                                                      // trig pos or time/div was increased
             left = 0;                                                        // show as much as we have on left side
         // unsigned right = result->triggerPosition + DIVS_TIME * scope->horizontal.timebase / channelData->voltage.interval;
-        if ( right >= sampleCount )
-            right = sampleCount - 1;
+        if ( right >= voltageCount )
+            right = voltageCount - 1;
         for ( int position = left; // left side of trace
               position <= right;   // right side
               ++position ) {
@@ -238,22 +266,24 @@ void SpectrumGenerator::process( PPresult *result ) {
 
         // calculate the average value
         double dc = 0.0;
-        for ( auto &oneSample : channelData->voltage.samples )
+        for ( auto &oneSample : voltage )
             dc += oneSample;
-        dc /= double( sampleCount );
+        dc /= double( voltageCount );
         channelData->dc = dc;
 
-        // now strip DC bias, calculate rms of AC component and apply window for fft to AC component
+        // now strip DC bias and calculate rms of AC component from all samples ...
         double ac2 = 0.0;
-        auto voltageIterator = channelData->voltage.samples.begin();
+        for ( auto &oneSample : voltage ) {
+            double ac_sample = oneSample - dc;
+            ac2 += ac_sample * ac_sample;
+        }
+        // ... and apply window for fft to AC component of the fft input
+        auto fftIterator = fftInput->cbegin();
         auto windowIterator = window.begin();
         double *pfftW = fftWindowedValues;
-        for ( int position = 0; position < sampleCount; ++position ) {
-            double ac_sample = *voltageIterator++ - dc;
-            ac2 += ac_sample * ac_sample;
-            *pfftW++ = *windowIterator++ * ac_sample;
-        }
-        ac2 /= double( sampleCount );             // AC²
+        for ( int position = 0; position < sampleCount; ++position )
+            *pfftW++ = *windowIterator++ * ( *fftIterator++ - dc );
+        ac2 /= double( voltageCount );            // AC²
         channelData->ac = sqrt( ac2 );            // rms of AC component
         channelData->rms = sqrt( dc * dc + ac2 ); // total rms = U eff
         channelData->dB = 20.0 * log10( channelData->rms ) - scope->analysis.spectrumReference;
@@ -266,8 +296,10 @@ void SpectrumGenerator::process( PPresult *result ) {
         if ( nullptr == fftHcSpectrum ) // error
             break;
         if ( analysis->reuseFftPlan ) {    // build one optimized plan and reuse it for all transformations
-            if ( nullptr == fftPlan_R2HC ) // not yet created, do it now (this takes some time)
+            if ( nullptr == fftPlan_R2HC ) { // not yet created, do it now (this takes some time)
                 fftPlan_R2HC = fftw_plan_r2r_1d( sampleCount, fftWindowedValues, fftHcSpectrum, FFTW_R2HC, FFTW_MEASURE );
+                fftPlanSize = sampleCount;
+            }
             fftw_execute_r2r( fftPlan_R2HC, fftWindowedValues, fftHcSpectrum ); // but it will run faster
         } else { // build a more generic plan, this takes much less time than the optimized plan
             fftPlan_R2HC = fftw_plan_r2r_1d( sampleCount, fftWindowedValues, fftHcSpectrum, FFTW_R2HC, FFTW_ESTIMATE );
@@ -393,7 +425,7 @@ void SpectrumGenerator::process( PPresult *result ) {
 
         // Calculate both peak frequencies (correlation and spectrum) in Hz
         double pF = channelData->spectrum.interval * peakFreqPos;
-        double pC = 1.0 / ( channelData->voltage.interval * peakCorrPos );
+        double pC = 1.0 / ( fftInterval * peakCorrPos );
         if ( scope->verboseLevel > 5 )
             qDebug() << "     SpectrumGenerator::process()" << channel << "freq:" << peakFreqPos << pF << "corr:" << peakCorrPos
                      << pC;

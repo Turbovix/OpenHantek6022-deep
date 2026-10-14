@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QDebug>
+#include <algorithm>
 #include <QMutex>
 #include <math.h>
 
@@ -143,6 +144,52 @@ void GraphGenerator::generateGraphsTYvoltage( PPresult *result ) {
         graphVoltage.clear();   // remove all previous dots and fill in new trace as GL_LINE_STRIP
         graphHistogram.clear(); // remove all previous line and fill in new histo as GL_LINES
         unsigned bins[ int( binsPerDiv * DIVS_VOLTAGE ) ] = { 0 };
+
+        // Deep memory: much more samples than screen pixels -> draw only min and max of each pixel column
+        // (in the order of their appearance), this keeps short peaks visible and reduces the GL load.
+        const unsigned columns = std::max( view->screenWidth, 1000u );
+        if ( dotsOnScreen > 4 * columns && sampleIterator < sampleEnd ) {
+            const double samplesPerColumn = double( dotsOnScreen ) / columns;
+            graphVoltage.reserve( 2 * columns + 2 );
+            ++sampleIterator; // same sample to position mapping as the dot by dot loop below
+            unsigned position = unsigned( leftmostPosition );
+            while ( position < dotsOnScreen && sampleIterator < sampleEnd ) {
+                unsigned columnEnd = unsigned( ceil( ( floor( position / samplesPerColumn ) + 1 ) * samplesPerColumn ) );
+                columnEnd = std::min( std::max( columnEnd, position + 1 ), dotsOnScreen );
+                double yMin = *sampleIterator / gain + offset;
+                double yMax = yMin;
+                unsigned posMin = position;
+                unsigned posMax = position;
+                for ( ; position < columnEnd && sampleIterator < sampleEnd; ++position ) {
+                    double y = *sampleIterator++ / gain + offset;
+                    if ( y < yMin ) {
+                        yMin = y;
+                        posMin = position;
+                    } else if ( y > yMax ) {
+                        yMax = y;
+                        posMax = position;
+                    }
+                    if ( scope->histogram ) {
+                        int bin = int( round( binsPerDiv * ( y + DIVS_VOLTAGE / 2 ) ) );
+                        if ( bin > 0 && bin < binsPerDiv * DIVS_VOLTAGE ) // count value if trace is on screen
+                            ++bins[ bin ];
+                    }
+                }
+                double xMin = double( MARGIN_LEFT + posMin * horizontalFactor );
+                double xMax = double( MARGIN_LEFT + posMax * horizontalFactor );
+                if ( scope->histogram && std::max( xMin, xMax ) >= MARGIN_RIGHT - 1.1 )
+                    continue; // histogram replaces trace in rightmost div
+                if ( posMin <= posMax ) {
+                    graphVoltage.push_back( QVector3D( float( xMin ), float( yMin ), 0.0f ) );
+                    graphVoltage.push_back( QVector3D( float( xMax ), float( yMax ), 0.0f ) );
+                } else {
+                    graphVoltage.push_back( QVector3D( float( xMax ), float( yMax ), 0.0f ) );
+                    graphVoltage.push_back( QVector3D( float( xMin ), float( yMin ), 0.0f ) );
+                }
+            }
+            sampleIterator = sampleEnd; // skip the dot by dot loop
+        }
+
         for ( unsigned int position = unsigned( leftmostPosition ); position < dotsOnScreen && sampleIterator < sampleEnd - 1;
               ++position ) {
             double x = double( MARGIN_LEFT + position * horizontalFactor );
