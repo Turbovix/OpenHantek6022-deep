@@ -30,10 +30,16 @@ const int SAMPLESIZE_ROLL = 40 * 256;
 /// current samplerate, bounded by SAMPLESIZE and the selected memory depth.
 inline const std::vector< unsigned > MEMORY_DEPTHS = { 20000, 50000, 100000, 200000, 500000, 1000000, 2000000, 4000000 };
 
-/// Max. size of one USB bulk transfer. Linux limits the memory of all usbfs transfers
-/// to usbfs_memory_mb (default 16 MiB), so keep some margin. Mind the oversampling:
-/// one displayed sample needs up to 200 raw samples at slow samplerates.
+/// Max. size of one USB bulk transfer. Mind the oversampling: one displayed sample
+/// needs up to 200 raw samples at slow samplerates.
+#ifdef Q_OS_LINUX
+/// Linux limits the memory of all usbfs transfers to usbfs_memory_mb (default 16 MiB),
+/// keep some margin. Gapless transfers of up to 16 MB were verified with a 6022BE.
 const unsigned MAX_TRANSFER_BYTES = 15000000;
+#else
+/// Other platforms: stay with the 4 MB known to work without gaps.
+const unsigned MAX_TRANSFER_BYTES = 4000000;
+#endif
 
 /// Longer records are averaged in blocks before the spectrum calculation (fft).
 const int SPECTRUM_MAX_SAMPLES = 100000;
