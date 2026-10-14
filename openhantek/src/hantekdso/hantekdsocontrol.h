@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <atomic>
+
 #ifdef Q_OS_WIN
 #ifndef NOMINMAX
 #define NOMINMAX 1 // disable windows.h min/max global methods
@@ -84,8 +86,10 @@ class HantekDsoControl : public QObject {
         if ( controlsettings.trigger.mode == Dso::TriggerMode::ROLL )
             return SAMPLESIZE_ROLL;
         else
-            return SAMPLESIZE;
+            return acquireSamples;
     }
+
+    unsigned getMemoryDepth() const { return memoryDepth; }
 
     bool isSamplingUI() const { return samplingUI; }
 
@@ -187,6 +191,13 @@ class HantekDsoControl : public QObject {
 
     // Results
     unsigned downsamplingNumber = 1; ///< Number of downsamples to reduce sample rate
+    unsigned memoryDepth = SAMPLESIZE; ///< Upper limit of samples per channel and acquisition
+    /// Samples per channel of the next acquisition, read also by the capturing thread
+    std::atomic< unsigned > acquireSamples{ SAMPLESIZE };
+    /// Use only as many samples as needed for two screens (SW trigger), bounded by memory depth
+    void updateAcquireSamples();
+    /// Memory depth usable with this oversampling, limited by the max. USB transfer size
+    unsigned depthLimit( unsigned oversampling ) const;
     DSOsamples result;
     unsigned expectedSampleCount = 0; ///< The expected total number of samples at
                                       /// the last check before sampling started
@@ -234,6 +245,10 @@ class HantekDsoControl : public QObject {
     /// restore current record time.
     /// \return The record time duration that has been set, 0.0 on error.
     Dso::ErrorCode setRecordTime( double duration = 0.0 );
+
+    /// \brief Sets the memory depth, i.e. the max. number of samples per channel and acquisition.
+    /// \param depth One of MEMORY_DEPTHS, other values are rounded to the next supported value.
+    void setMemoryDepth( unsigned depth );
 
     /// \brief Enables/disables filtering of the given channel.
     /// \param channel The channel that should be set.

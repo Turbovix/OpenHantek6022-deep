@@ -3,6 +3,7 @@
 // #define TIMESTAMPDEBUG
 
 #include <QDebug>
+#include <algorithm>
 #include <QTimer>
 
 #include <QtCore>
@@ -144,6 +145,7 @@ Dso::ErrorCode HantekDsoControl::setSamplerate( double samplerate ) {
     unsigned oversample = specification->fixedSampleRates[ sampleIndex ].oversampling;
     setDownsampling( oversample );
     controlsettings.samplerate.current = samplerate;
+    updateAcquireSamples();
     if ( verboseLevel > 2 )
         qDebug() << "  HDC::setSamplerate() emit samplerateCalculated" << samplerate << oversample;
     emit samplerateCalculated( samplerate, oversample );
@@ -173,7 +175,7 @@ Dso::ErrorCode HantekDsoControl::setRecordTime( double duration ) {
         srLimit = ( specification->samplerate.single ).max;
     else
         srLimit = ( specification->samplerate.multi ).max;
-    // For now - we go for the SAMPLESIZE (= 20000) size sampling, defined in dsosamples.h
+    // Use up to memoryDepth samples (SAMPLESIZE = 20000 by default, see dsosamples.h)
     // Find highest samplerate using less equal half of these samples to obtain our duration.
     uint8_t sampleIndex = 0;
     for ( uint8_t iii = 0; iii < specification->fixedSampleRates.size(); ++iii ) {
@@ -182,7 +184,8 @@ Dso::ErrorCode HantekDsoControl::setRecordTime( double duration ) {
             qDebug() << "   sampleIndex:" << sampleIndex << "sRate:" << sRate << "sRate*duration:" << sRate * duration;
         // Ensure that at least 1/2 of remaining samples are available for SW trigger algorithm
         // for stability reason avoid the highest sample rate as default
-        if ( sRate < srLimit && sRate * duration <= SAMPLESIZE / 2 ) {
+        unsigned depth = depthLimit( specification->fixedSampleRates[ iii ].oversampling );
+        if ( sRate < srLimit && sRate * duration <= depth / 2 ) {
             sampleIndex = iii;
         }
     }
@@ -191,10 +194,53 @@ Dso::ErrorCode HantekDsoControl::setRecordTime( double duration ) {
     setDownsampling( oversampling );
     double samplerate = specification->fixedSampleRates[ sampleIndex ].samplerate;
     controlsettings.samplerate.current = samplerate;
+    updateAcquireSamples();
     if ( verboseLevel > 2 )
         qDebug() << "  HDC::setRecordTime() emit samplerateChanged" << samplerate << oversampling;
     emit samplerateCalculated( samplerate, oversampling );
     return Dso::ErrorCode::NONE;
+}
+
+
+void HantekDsoControl::updateAcquireSamples() {
+    double duration = controlsettings.samplerate.target.duration;
+    if ( duration <= 0.0 && scope )
+        duration = scope->horizontal.timebase * DIVS_TIME;
+    // two screens: one for display, one as margin for the SW trigger search
+    double needed = ceil( 2 * controlsettings.samplerate.current * duration / 1000.0 ) * 1000.0;
+    unsigned depth = depthLimit( downsamplingNumber );
+    unsigned samples = unsigned( qBound( double( SAMPLESIZE ), needed, double( depth ) ) );
+    if ( verboseLevel > 2 )
+        qDebug() << "  HDC::updateAcquireSamples()" << samples << "of max" << depth << "/" << memoryDepth;
+    acquireSamples = samples;
+}
+
+
+unsigned HantekDsoControl::depthLimit( unsigned oversampling ) const {
+    // raw bytes = ( samples * oversampling + leading samples ) * channels, see grossSampleCount()
+    unsigned rawPerChannel = MAX_TRANSFER_BYTES / specification->channels - 4096;
+    unsigned limit = rawPerChannel / qMax( oversampling, 1u );
+    return qBound( unsigned( SAMPLESIZE ), limit, memoryDepth );
+}
+
+
+void HantekDsoControl::setMemoryDepth( unsigned depth ) {
+    // round up to the next supported value, limit to the largest one
+    auto it = std::lower_bound( MEMORY_DEPTHS.begin(), MEMORY_DEPTHS.end(), depth );
+    depth = it == MEMORY_DEPTHS.end() ? MEMORY_DEPTHS.back() : *it;
+    if ( verboseLevel > 2 )
+        qDebug() << "  HDC::setMemoryDepth()" << depth;
+    if ( depth == memoryDepth )
+        return;
+    memoryDepth = depth;
+    // recalculate samplerate and acquisition size for the current target
+    // (setRecordTime() without argument would not recalculate anything)
+    if ( controlsettings.samplerate.target.samplerateSet == ControlSettingsSamplerateTarget::Samplerrate )
+        setSamplerate();
+    else if ( controlsettings.samplerate.target.duration > 0.0 )
+        setRecordTime( controlsettings.samplerate.target.duration );
+    updateAcquireSamples(); // also if the calls above returned early (device not connected)
+    restartSampling();      // invalidate samples captured with the old size
 }
 
 
@@ -435,6 +481,7 @@ void HantekDsoControl::applySettings( const DsoSettingsScope *dsoSettingsScope )
             setCoupling( channel, Dso::Coupling( dsoSettingsScope->voltage[ channel ].couplingOrMathIndex ) );
     }
 
+    setMemoryDepth( dsoSettingsScope->horizontal.memoryDepth );
     setRecordTime( dsoSettingsScope->horizontal.timebase * DIVS_TIME );
     setCalFreq( dsoSettingsScope->horizontal.calfreq );
     setTriggerMode( dsoSettingsScope->trigger.mode );

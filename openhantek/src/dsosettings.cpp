@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <QApplication>
+#include <algorithm>
 #include <QColor>
 #include <QFileInfo>
 #include <QSettings>
 
 #include "dsosettings.h"
+#include "hantekdso/dsosamples.h"
 #include "hantekdso/mathmodes.h"
 
 /// \brief Set the number of channels.
@@ -139,6 +141,11 @@ void DsoSettings::load() {
         scope.horizontal.acquireInterval = storeSettings->value( "acquireInterval" ).toDouble();
     if ( storeSettings->contains( "recordLength" ) )
         scope.horizontal.recordLength = storeSettings->value( "recordLength" ).toInt();
+    if ( storeSettings->contains( "memoryDepth" ) ) { // accept only supported values
+        unsigned depth = storeSettings->value( "memoryDepth" ).toUInt();
+        if ( std::find( MEMORY_DEPTHS.begin(), MEMORY_DEPTHS.end(), depth ) != MEMORY_DEPTHS.end() )
+            scope.horizontal.memoryDepth = depth;
+    }
     if ( storeSettings->contains( "samplerate" ) )
         scope.horizontal.samplerate = storeSettings->value( "samplerate" ).toDouble();
     if ( storeSettings->contains( "calfreq" ) )
@@ -380,6 +387,7 @@ void DsoSettings::save() {
     storeSettings->setValue( "maxTimebase", scope.horizontal.maxTimebase );
     storeSettings->setValue( "acquireInterval", scope.horizontal.acquireInterval );
     storeSettings->setValue( "recordLength", scope.horizontal.recordLength );
+    storeSettings->setValue( "memoryDepth", scope.horizontal.memoryDepth );
     storeSettings->setValue( "samplerate", scope.horizontal.samplerate );
     storeSettings->setValue( "calfreq", scope.horizontal.calfreq );
     storeSettings->endGroup(); // horizontal

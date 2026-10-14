@@ -684,22 +684,22 @@
 <context>
     <name>DsoSettings</name>
     <message>
-        <location filename="../src/dsosettings.cpp" line="28"/>
+        <location filename="../src/dsosettings.cpp" line="30"/>
         <source>SP%1</source>
         <translation>SP%1</translation>
     </message>
     <message>
-        <location filename="../src/dsosettings.cpp" line="33"/>
+        <location filename="../src/dsosettings.cpp" line="35"/>
         <source>CH%1</source>
         <translation>CH%1</translation>
     </message>
     <message>
-        <location filename="../src/dsosettings.cpp" line="44"/>
+        <location filename="../src/dsosettings.cpp" line="46"/>
         <source>SPM</source>
         <translation>SPC</translation>
     </message>
     <message>
-        <location filename="../src/dsosettings.cpp" line="49"/>
+        <location filename="../src/dsosettings.cpp" line="51"/>
         <source>MATH</source>
         <translation>MATH</translation>
     </message>
@@ -707,17 +707,17 @@
 <context>
     <name>DsoSettingsScopeAnalysis</name>
     <message>
-        <location filename="../src/scopesettings.h" line="71"/>
+        <location filename="../src/scopesettings.h" line="72"/>
         <source>V</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scopesettings.h" line="72"/>
+        <location filename="../src/scopesettings.h" line="73"/>
         <source>u</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/scopesettings.h" line="73"/>
+        <location filename="../src/scopesettings.h" line="74"/>
         <source>m</source>
         <translation></translation>
     </message>
@@ -927,7 +927,7 @@
         <translation type="vanished">Não foi possível obter dados do canal do osciloscópio</translation>
     </message>
     <message>
-        <location filename="../src/hantekdso/hantekdsocontrol.cpp" line="662"/>
+        <location filename="../src/hantekdso/hantekdsocontrol.cpp" line="709"/>
         <source>Couldn&apos;t get calibration data from oscilloscope&apos;s EEPROM. Use a config file for calibration!</source>
         <translation>Não foi possível obter dados de calibração a partir da EEPROM do osciloscópio. Use um arquivo de configuração para a calibração!</translation>
     </message>
@@ -935,56 +935,66 @@
 <context>
     <name>HorizontalDock</name>
     <message>
-        <location filename="../src/docks/HorizontalDock.cpp" line="31"/>
+        <location filename="../src/docks/HorizontalDock.cpp" line="34"/>
         <source>Horizontal</source>
         <translation>Horizontal</translation>
     </message>
     <message>
-        <location filename="../src/docks/HorizontalDock.cpp" line="37"/>
+        <location filename="../src/docks/HorizontalDock.cpp" line="40"/>
         <source>Samplerate</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/docks/HorizontalDock.cpp" line="40"/>
+        <location filename="../src/docks/HorizontalDock.cpp" line="43"/>
         <source>Effective samplerate, automatically selected from &apos;Timebase&apos; setting</source>
         <translation>Amostragem efetiva, selecionada automaticamente da configuração &apos;Timebase&apos;</translation>
     </message>
     <message>
-        <location filename="../src/docks/HorizontalDock.cpp" line="43"/>
+        <location filename="../src/docks/HorizontalDock.cpp" line="46"/>
         <source>/s</source>
         <translation>/s</translation>
     </message>
     <message>
-        <location filename="../src/docks/HorizontalDock.cpp" line="47"/>
+        <location filename="../src/docks/HorizontalDock.cpp" line="50"/>
         <source>Timebase</source>
         <translation>Tempo base</translation>
     </message>
     <message>
-        <location filename="../src/docks/HorizontalDock.cpp" line="50"/>
+        <location filename="../src/docks/HorizontalDock.cpp" line="53"/>
         <source>Time per horizontal screen division</source>
         <translation>Tempo por divisão de tela horizontal</translation>
     </message>
     <message>
-        <location filename="../src/docks/HorizontalDock.cpp" line="67"/>
+        <location filename="../src/docks/HorizontalDock.cpp" line="70"/>
         <source>Select the frequency of the calibration output, scroll for fast change</source>
         <translation>Selecione a freqüência da calibração, role para mudança rápida</translation>
+    </message>
+    <message>
+        <location filename="../src/docks/HorizontalDock.cpp" line="74"/>
+        <source>Memory depth</source>
+        <translation>Memória</translation>
+    </message>
+    <message>
+        <location filename="../src/docks/HorizontalDock.cpp" line="78"/>
+        <source>Max. samples per channel and acquisition, higher values allow higher samplerates for slow timebases</source>
+        <translation>Máximo de amostras por canal em cada aquisição; valores maiores permitem taxas de amostragem maiores em bases de tempo lentas</translation>
     </message>
     <message>
         <source>Frequencybase</source>
         <translation type="vanished">Frequência base</translation>
     </message>
     <message>
-        <location filename="../src/docks/HorizontalDock.cpp" line="55"/>
+        <location filename="../src/docks/HorizontalDock.cpp" line="58"/>
         <source>Format</source>
         <translation>Formato</translation>
     </message>
     <message>
-        <location filename="../src/docks/HorizontalDock.cpp" line="58"/>
+        <location filename="../src/docks/HorizontalDock.cpp" line="61"/>
         <source>Select signal over time or XY display</source>
         <translation>Selecionar o sinal ao longo do tempo ou visor XY</translation>
     </message>
     <message>
-        <location filename="../src/docks/HorizontalDock.cpp" line="62"/>
+        <location filename="../src/docks/HorizontalDock.cpp" line="65"/>
         <source>Calibration out</source>
         <translation></translation>
     </message>
@@ -1286,7 +1296,7 @@
         <translation type="obsolete">&amp;Parar</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="385"/>
+        <location filename="../src/mainwindow.cpp" line="387"/>
         <source>Stop the oscilloscope</source>
         <translation>Parar osciloscópio</translation>
     </message>
@@ -1355,29 +1365,29 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="384"/>
+        <location filename="../src/mainwindow.cpp" line="386"/>
         <source>Stop</source>
         <translation>Parar</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="388"/>
-        <location filename="../src/mainwindow.cpp" line="590"/>
+        <location filename="../src/mainwindow.cpp" line="390"/>
+        <location filename="../src/mainwindow.cpp" line="592"/>
         <source>Start</source>
         <translation>Iniciar</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="389"/>
+        <location filename="../src/mainwindow.cpp" line="391"/>
         <source>Start the oscilloscope</source>
         <translation>Iniciar osciloscópio</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="410"/>
+        <location filename="../src/mainwindow.cpp" line="412"/>
         <source>Open file</source>
         <translation>Abrir arquivo</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="410"/>
-        <location filename="../src/mainwindow.cpp" line="435"/>
+        <location filename="../src/mainwindow.cpp" line="412"/>
+        <location filename="../src/mainwindow.cpp" line="437"/>
         <source>Settings (*.conf)</source>
         <translation>Configurações (*.conf)</translation>
     </message>
@@ -1477,105 +1487,105 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="435"/>
+        <location filename="../src/mainwindow.cpp" line="437"/>
         <source>Save settings</source>
         <translation>Salvar configurações</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="461"/>
+        <location filename="../src/mainwindow.cpp" line="463"/>
         <source>Disable fading of previous graphs</source>
         <translation>Desabilitar desaparecimento de gráficos anteriores</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="463"/>
+        <location filename="../src/mainwindow.cpp" line="465"/>
         <source>Enable fading of previous graphs</source>
         <translation>Habilitar desaparecimento de gráficos anteriores</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="471"/>
+        <location filename="../src/mainwindow.cpp" line="473"/>
         <source>Hide histogram</source>
         <translation>Esconder histogram</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="473"/>
+        <location filename="../src/mainwindow.cpp" line="475"/>
         <source>Show histogram</source>
         <translation>Mostrar histogram</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="482"/>
+        <location filename="../src/mainwindow.cpp" line="484"/>
         <source>Hide magnified scope</source>
         <translation>Esconder/Ampliar osciloscópio</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="484"/>
+        <location filename="../src/mainwindow.cpp" line="486"/>
         <source>Show magnified scope</source>
         <translation>Mostrar osciloscópio ampliado</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="494"/>
+        <location filename="../src/mainwindow.cpp" line="496"/>
         <source>Hide measurements</source>
         <translation>Esconder medidas</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="496"/>
+        <location filename="../src/mainwindow.cpp" line="498"/>
         <source>Show measurements</source>
         <translation>Mostrar medidas</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="511"/>
+        <location filename="../src/mainwindow.cpp" line="513"/>
         <source>&lt;p&gt;Demo Mode&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="512"/>
+        <location filename="../src/mainwindow.cpp" line="514"/>
         <source>&lt;p&gt;Device: %1 (%2), FW%3&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="518"/>
+        <location filename="../src/mainwindow.cpp" line="520"/>
         <source>&lt;p&gt;Open source software for Hantek6022 USB oscilloscopes&lt;/p&gt;&lt;p&gt;Maintainer: Martin Homuth-Rosemann&lt;/p&gt;&lt;p&gt;Copyright &amp;copy; 2010, 2011 Oliver Haag&lt;/p&gt;&lt;p&gt;Copyright &amp;copy; 2012-%1 OpenHantek community&lt;br/&gt;&lt;a href=&apos;https://github.com/OpenHantek&apos;&gt;https://github.com/OpenHantek&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Open source firmware copyright &amp;copy; 2019-%1 Martin Homuth-Rosemann&lt;br/&gt;&lt;a href=&apos;https://github.com/Ho-Ro/Hantek6022API&apos;&gt;https://github.com/Ho-Ro/Hantek6022API&lt;/a&gt;&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="529"/>
+        <location filename="../src/mainwindow.cpp" line="531"/>
         <source>&lt;p&gt;Graphic: %1 - GLSL version %2&lt;/p&gt;&lt;p&gt;Qt version: %3&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="533"/>
+        <location filename="../src/mainwindow.cpp" line="535"/>
         <source>&lt;p&gt;Running since %1 seconds.&lt;/p&gt;</source>
         <translation>&lt;p&gt;Correndo desde %1 segundos.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="568"/>
+        <location filename="../src/mainwindow.cpp" line="570"/>
         <source>%1: %2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="591"/>
+        <location filename="../src/mainwindow.cpp" line="593"/>
         <source>Oscilloscope unavailable</source>
         <translation>Osciloscópio indisponível</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="643"/>
+        <location filename="../src/mainwindow.cpp" line="645"/>
         <source>yyyy-MM-dd hh:mm:ss</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="644"/>
+        <location filename="../src/mainwindow.cpp" line="646"/>
         <source>yyyyMMdd_hhmmss</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="678"/>
-        <location filename="../src/mainwindow.cpp" line="692"/>
+        <location filename="../src/mainwindow.cpp" line="680"/>
+        <location filename="../src/mainwindow.cpp" line="694"/>
         <source>Write error
 %1</source>
         <translation>Escrever erro
 %1</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="682"/>
+        <location filename="../src/mainwindow.cpp" line="684"/>
         <source>Save Screenshot</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1584,12 +1594,12 @@
         <translation type="vanished">Erro</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="681"/>
+        <location filename="../src/mainwindow.cpp" line="683"/>
         <source>Image (*.png *.jpg)</source>
         <translation>Imagem (*.png *.jpg)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="681"/>
+        <location filename="../src/mainwindow.cpp" line="683"/>
         <source>Portable Document Format (*.pdf)</source>
         <translation></translation>
     </message>
@@ -1598,7 +1608,7 @@
         <translation type="vanished">Salvar screenshot</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="715"/>
+        <location filename="../src/mainwindow.cpp" line="717"/>
         <source>Print oscillograph</source>
         <translation>Impressão</translation>
     </message>

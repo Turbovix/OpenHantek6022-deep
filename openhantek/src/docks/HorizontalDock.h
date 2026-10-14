@@ -58,6 +58,9 @@ class HorizontalDock : public QDockWidget {
     /// \brief Changes the calibration frequency.
     /// \param calfreq The calibration frequency in hertz.
     double setCalfreq( double calfreq );
+    /// \brief Changes the memory depth.
+    /// \param depth The max. number of samples per channel and acquisition.
+    void setMemoryDepth( unsigned depth );
 
   public slots:
     /// \brief Loads settings into GUI
@@ -73,11 +76,13 @@ class HorizontalDock : public QDockWidget {
     QLabel *timebaseLabel;          ///< The label for the timebase spinbox
     QLabel *formatLabel;            ///< The label for the format combobox
     QLabel *calfreqLabel;           ///< The label for the calibration frequency spinbox
+    QLabel *memoryDepthLabel;       ///< The label for the memory depth combobox
     SiSpinBox *samplerateSiSpinBox; ///< Selects the samplerate for acquisitions
     SiSpinBox *timebaseSiSpinBox;   ///< Selects the timebase for voltage graphs
     QComboBox *formatComboBox;      ///< Selects the way the sampled data is
                                     ///  interpreted and shown
     QComboBox *calfreqComboBox;     ///< Selects the calibration frequency
+    QComboBox *memoryDepthComboBox; ///< Selects the max. number of samples per acquisition
 
     DsoSettingsScope *scope;         ///< The settings provided by the parent class
     QList< double > timebaseSteps;   ///< Steps for the timebase spinbox
@@ -91,6 +96,7 @@ class HorizontalDock : public QDockWidget {
     void timebaseSelected( double timebase );
     void formatSelected( int index );
     void calfreqIndexSelected( int index );
+    void memoryDepthIndexSelected( int index );
 
   private:
     double samplerateRequest = 0;
@@ -101,4 +107,5 @@ class HorizontalDock : public QDockWidget {
     void recordLengthChanged( int recordLength );  ///< The recordd length has been changed
     void formatChanged( Dso::GraphFormat format ); ///< The viewing format has been changed
     void calfreqChanged( double calfreq );         ///< The timebase has been changed
+    void memoryDepthChanged( unsigned depth );     ///< The memory depth has been changed
 };

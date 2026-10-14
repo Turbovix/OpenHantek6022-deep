@@ -11,13 +11,16 @@
 #include <QThread>
 
 #include <cmath>
+#include <algorithm>
 
 #include "HorizontalDock.h"
 #include "dockwindows.h"
+#include "hantekdso/dsosamples.h"
 
 #include "scopesettings.h"
 #include "sispinbox.h"
 #include "utils/printutils.h"
+#include "viewconstants.h"
 
 static int row = 0;
 
@@ -68,6 +71,14 @@ HorizontalDock::HorizontalDock( DsoSettingsScope *scope, const Dso::ControlSpeci
     for ( double calfreqStep : std::as_const( calfreqSteps ) )
         calfreqComboBox->addItem( valueToString( calfreqStep, UNIT_HERTZ, calfreqStep < 10e3 ? 2 : 0 ) );
 
+    memoryDepthLabel = new QLabel( tr( "Memory depth" ) );
+    memoryDepthComboBox = new QComboBox();
+    if ( scope->toolTipVisible )
+        memoryDepthComboBox->setToolTip(
+            tr( "Max. samples per channel and acquisition, higher values allow higher samplerates for slow timebases" ) );
+    for ( unsigned depth : MEMORY_DEPTHS )
+        memoryDepthComboBox->addItem( valueToString( depth, UNIT_SAMPLES, 0 ) );
+
     dockLayout = new QGridLayout();
     dockLayout->setColumnMinimumWidth( 0, 64 );
     dockLayout->setColumnStretch( 1, 1 );
@@ -78,6 +89,8 @@ HorizontalDock::HorizontalDock( DsoSettingsScope *scope, const Dso::ControlSpeci
     dockLayout->addWidget( timebaseSiSpinBox, row++, 1 );
     dockLayout->addWidget( samplerateLabel, row, 0 );
     dockLayout->addWidget( samplerateSiSpinBox, row++, 1 );
+    dockLayout->addWidget( memoryDepthLabel, row, 0 );
+    dockLayout->addWidget( memoryDepthComboBox, row++, 1 );
     dockLayout->addWidget( formatLabel, row, 0 );
     dockLayout->addWidget( formatComboBox, row++, 1 );
     dockLayout->addWidget( calfreqLabel, row, 0 );
@@ -98,11 +111,14 @@ HorizontalDock::HorizontalDock( DsoSettingsScope *scope, const Dso::ControlSpeci
              [ this ]( int index ) { this->formatSelected( index ); } );
     connect( calfreqComboBox, SELECT< int >::OVERLOAD_OF( &QComboBox::currentIndexChanged ), this,
              [ this ]( int index ) { this->calfreqIndexSelected( index ); } );
+    connect( memoryDepthComboBox, SELECT< int >::OVERLOAD_OF( &QComboBox::currentIndexChanged ), this,
+             [ this ]( int index ) { this->memoryDepthIndexSelected( index ); } );
 }
 
 
 void HorizontalDock::loadSettings( DsoSettingsScope *scope ) {
     // Set values
+    setMemoryDepth( scope->horizontal.memoryDepth );
     setSamplerate( scope->horizontal.samplerate );
     setTimebase( scope->horizontal.timebase );
     setFormat( scope->horizontal.format );
@@ -255,8 +271,8 @@ void HorizontalDock::calculateSamplerateSteps( double timebase ) {
             }
             // max must be > minRate
             // find max samplesrate to get not more then this number of samples per div
-            // number should be <= 1000 to get enough samples for two full screens (to ensure triggering)
-            if ( id && sRate * timebase <= 1000 ) { // 1000 samples/div
+            // use max. half of the memory depth to get enough samples for two full screens (to ensure triggering)
+            if ( id && sRate * timebase <= scope->horizontal.memoryDepth / 2 / DIVS_TIME ) { // 1000 samples/div @ 20 kS
                 max = sRate;
             }
         }
@@ -289,4 +305,25 @@ void HorizontalDock::calfreqIndexSelected( int index ) {
         qDebug() << "  HDock::calfreqIndex Selected()" << index << calfreq;
     scope->horizontal.calfreq = calfreq;
     emit calfreqChanged( calfreq );
+}
+
+
+void HorizontalDock::setMemoryDepth( unsigned depth ) {
+    auto it = std::find( MEMORY_DEPTHS.begin(), MEMORY_DEPTHS.end(), depth );
+    if ( it == MEMORY_DEPTHS.end() )
+        return;
+    QSignalBlocker blocker( memoryDepthComboBox );
+    memoryDepthComboBox->setCurrentIndex( int( it - MEMORY_DEPTHS.begin() ) );
+}
+
+
+/// \brief Called when the memory depth combobox changes its value.
+/// \param index The item index.
+void HorizontalDock::memoryDepthIndexSelected( int index ) {
+    unsigned depth = MEMORY_DEPTHS[ size_t( index ) ];
+    if ( scope->verboseLevel > 2 )
+        qDebug() << "  HDock::memoryDepthIndexSelected()" << index << depth;
+    scope->horizontal.memoryDepth = depth;
+    calculateSamplerateSteps( scope->horizontal.timebase ); // the samplerate limit depends on the depth
+    emit memoryDepthChanged( depth );
 }
